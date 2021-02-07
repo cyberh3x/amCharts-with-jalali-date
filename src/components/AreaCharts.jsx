@@ -266,6 +266,7 @@ AreaChart.propTypes = {
   persianMode: PropTypes.bool,
   theme: PropTypes.object,
   seriesStrokeWidth: PropTypes.number,
+  valueAxisTitle: PropTypes.string,
 };
 
 export default AreaChart;
