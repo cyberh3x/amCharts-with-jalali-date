@@ -5,6 +5,7 @@ import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 import am4themes_material from "@amcharts/amcharts4/themes/material";
 import momentJalali from "moment-jalaali";
+import moment from "moment";
 import fa from "moment/locale/fa";
 import en from "moment/locale/en-au";
 import { chartDateFormat, chartDateTimeFormat } from "../constant/Index";
@@ -21,6 +22,20 @@ const AreaChart = ({
   theme,
   seriesStrokeWidth = 1,
   valueAxisTitle = null,
+  seriesTooltipHtml = null,
+  exportable = true,
+  exportMenuItems = null,
+  dateAxisMinGridDistance = 60,
+  dateAxisStartLocation = 0,
+  dateaxisEndLocation = 0,
+  dateAxisStart = 0,
+  dateAxisKeepSelection = false,
+  seriesTooltipIsDisabled = false,
+  seriesIsStack = true,
+  seriesHasBullet = true,
+  hasXyCursor = true,
+  hasScrollbarX = true,
+  ...props
 }) => {
   const [defaultTheme, setDefaultTheme] = useState(
       theme
@@ -33,6 +48,9 @@ const AreaChart = ({
             labelsColor: "#000",
             seriesOpacity: 0.1,
             fadeOpacity: 1,
+            seriesTooltipBackgroundColor: "#fff",
+            seriesTooltipBackgroundOpacity: 0.8,
+            seriesFillOpacity: 0.7,
             colors: [
               am4core.color("#00d084"),
               am4core.color("#474776"),
@@ -83,8 +101,8 @@ const AreaChart = ({
         case "currDay":
           timeUnit = "minute";
           timeRangeValue = {
-            min: momentJalali().startOf("day").valueOf(),
-            max: momentJalali().endOf("day").valueOf(),
+            min: moment().startOf("day").valueOf(),
+            max: moment().endOf("day").valueOf(),
             format: `HH:mm`,
             jalaliFormat: `HH:mm`,
           };
@@ -128,45 +146,48 @@ const AreaChart = ({
     chart.background.opacity = 0.5;
     chart.data = data;
     chart.colors.list = defaultTheme.colors;
-    chart.exporting.menu = new am4core.ExportMenu();
-    // chart.exporting.menu.items = [
-    //   {
-    //     label: intl.formatMessage({ id: "chart.export" }),
-    //     menu: [
-    //       {
-    //         label: intl.formatMessage({ id: "chart.image" }),
-    //         menu: [
-    //           { type: "png", label: "PNG" },
-    //           { type: "jpg", label: "JPG" },
-    //           { type: "svg", label: "SVG" },
-    //           { type: "pdf", label: "PDF" },
-    //         ],
-    //       },
-    //       {
-    //         label: intl.formatMessage({ id: "chart.data" }),
-    //         menu: [
-    //           { type: "csv", label: "CSV" },
-    //           { type: "xlsx", label: "XLSX" },
-    //           { type: "pdfdata", label: "PDF" },
-    //         ],
-    //       },
-    //     ],
-    //   },
-    // ];
-
+    if (exportable) {
+      chart.exporting.menu = new am4core.ExportMenu();
+      chart.exporting.menu.items = exportMenuItems
+        ? exportMenuItems
+        : [
+            {
+              label: `<p class="p-0 m-4">&#9776;</p>`,
+              menu: [
+                {
+                  label: persianMode ? "تصویر" : "Image",
+                  menu: [
+                    { type: "png", label: "PNG" },
+                    { type: "jpg", label: "JPG" },
+                    { type: "svg", label: "SVG" },
+                    { type: "pdf", label: "PDF" },
+                  ],
+                },
+                {
+                  label: persianMode ? "داده" : "Data",
+                  menu: [
+                    { type: "csv", label: "CSV" },
+                    { type: "xlsx", label: "XLSX" },
+                    { type: "pdfdata", label: "PDF" },
+                  ],
+                },
+              ],
+            },
+          ];
+    }
     const dateAxis = chart.xAxes.push(new am4charts.DateAxis());
     dateAxis.tooltip.disabled = true;
-    dateAxis.renderer.minGridDistance = 60;
-    dateAxis.startLocation = 0;
-    dateAxis.endLocation = 0;
-    // dateAxis.start = 0.8;
-    // dateAxis.keepSelection = true;
+    dateAxis.renderer.minGridDistance = dateAxisMinGridDistance;
+    dateAxis.startLocation = dateAxisStartLocation;
+    dateAxis.endLocation = dateaxisEndLocation;
+    dateAxis.start = dateAxisStart;
+    dateAxis.keepSelection = dateAxisKeepSelection;
     dateAxis.baseInterval = {
       timeUnit: timeUnit,
       count: count,
     };
-    dateAxis.renderer.labels.template.fill = "red";
-    // chart.dateFormatter.utc = true;
+    dateAxis.renderer.labels.template.fill = defaultTheme.labelsColor;
+    chart.dateFormatter.utc = true;
     dateAxis.renderer.labels.template.adapter.add("text", (value, target) => {
       const dateObject = target.dataItem.dates.date;
       let jalaliDate = null;
@@ -191,11 +212,7 @@ const AreaChart = ({
     );
 
     dateAxis.tooltipDateFormat = timeRangeValue.format;
-    // dateAxis.start = 0.8;
-    dateAxis.keepSelection = true;
-
     const valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-    valueAxis.tooltip.disabled = true;
     //style value axis grid
     valueAxis.renderer.grid.template.stroke = am4core.color(
       defaultTheme.gridColor
@@ -205,38 +222,35 @@ const AreaChart = ({
     valueAxis.maxPrecision = 0;
     valueAxis.renderer.grid.template.gridCount = 349742083402;
     valueAxis.renderer.grid.template.location = 0;
-    valueAxis.tooltip.disabled = false;
-    valueAxis.renderer.labels.template.fill = "#000";
+    valueAxis.tooltip.disabled = true;
+    valueAxis.renderer.labels.template.fill = defaultTheme.labelsColor;
     valueAxis.title.text = valueAxisTitle;
-    // let toolTip = [];
     const series = chart.series.push(new am4charts.LineSeries());
     series.dataFields.dateX = seriesDataFieldsDateX;
     series.dataFields.valueY = seriesDataFieldsValueX;
-    series.tooltip.background.fill = am4core.color("#fff");
-    series.tooltip.background.opacity = 0.8;
-    series.tooltip.label.fill = am4core.color("#000");
+    series.tooltip.background.fill = am4core.color(
+      defaultTheme.seriesTooltipBackgroundColor
+    );
+    series.tooltip.background.opacity =
+      defaultTheme.seriesTooltipBackgroundOpacity;
+    series.tooltip.label.fill = am4core.color(defaultTheme.labelsColor);
     series.strokeWidth = seriesStrokeWidth;
     series.tensionX = 1;
-    series.stacked = true;
-    series.bullets.push(new am4charts.CircleBullet());
-    series.background.fill.fill = am4core.color("#00d084");
+    series.stacked = seriesIsStack;
+    if (seriesHasBullet) series.bullets.push(new am4charts.CircleBullet());
+    series.background.fill.fill = defaultTheme.colors[0];
     series.fillOpacity = defaultTheme.seriesOpacity;
     series.tooltip.getFillFromObject = false;
-    // for on click event
-    series.tooltip.label.interactionsEnabled = true;
+    series.tooltip.disabled = seriesTooltipIsDisabled;
 
-    // toolTip.unshift(
-    //   `<tr>
-    //         <th style="text-align: left">${label}:</th>
-    //         <td style="text-align: right">{${name}}</td>
-    //       </tr>`
-    // );
-
-    series.tooltipHTML = `<div class="text-center p-0">
-        <h5>{${persianMode ? `jalali` : `date`}}</h5>
-        <span class="m-2">${seriesTooltipTitle}: {count} </span><br/>
-        </div>`;
-    series.fillOpacity = 0.7;
+    const defualtTooltipHtml = `<div class="text-center p-0">
+    <h5>{${persianMode ? `jalaliDate` : `date`}}</h5>
+    <span class="m-2">${seriesTooltipTitle}: {value} </span><br/>
+    </div>`;
+    series.tooltipHTML = seriesTooltipHtml
+      ? seriesTooltipHtml
+      : defualtTooltipHtml;
+    series.fillOpacity = defaultTheme.seriesFillOpacity;
 
     let fillModifier = new am4core.LinearGradientModifier();
     fillModifier.opacities = [0.3, 1];
@@ -244,15 +258,19 @@ const AreaChart = ({
     fillModifier.gradient.rotation = 90;
     series.segments.template.fillModifier = fillModifier;
 
-    chart.cursor = new am4charts.XYCursor();
-    chart.cursor.lineY.opacity = 0;
-    chart.scrollbarX = new am4charts.XYChartScrollbar();
-    chart.scrollbarX.series.push(series);
+    if (hasXyCursor) {
+      chart.cursor = new am4charts.XYCursor();
+      chart.cursor.lineY.opacity = 1;
+    }
+    if (hasScrollbarX) {
+      chart.scrollbarX = new am4charts.XYChartScrollbar();
+      chart.scrollbarX.series.push(series);
+    }
   };
 
   useEffect(() => {
     initalChart();
-  }, []);
+  }, [props]);
 
   return <div id={id} className={className}></div>;
 };
@@ -264,9 +282,24 @@ AreaChart.propTypes = {
   id: PropTypes.string,
   seriesTooltipTitle: PropTypes.string.isRequired,
   persianMode: PropTypes.bool,
+  seriesDataFieldsDateX: PropTypes.string,
+  seriesDataFieldsValueX: PropTypes.string,
   theme: PropTypes.object,
   seriesStrokeWidth: PropTypes.number,
   valueAxisTitle: PropTypes.string,
+  seriesTooltipHtml: PropTypes.string,
+  exportable: PropTypes.bool,
+  exportMenuItems: PropTypes.array,
+  dateAxisMinGridDistance: PropTypes.number,
+  dateAxisStartLocation: PropTypes.number,
+  dateaxisEndLocation: PropTypes.number,
+  dateAxisStart: PropTypes.number,
+  dateAxisKeepSelection: PropTypes.bool,
+  seriesTooltipIsDisabled: PropTypes.bool,
+  seriesIsStack: PropTypes.bool,
+  seriesHasBullet: PropTypes.bool,
+  hasXyCursor: PropTypes.bool,
+  hasScrollbarX: PropTypes.bool,
 };
 
 export default AreaChart;
