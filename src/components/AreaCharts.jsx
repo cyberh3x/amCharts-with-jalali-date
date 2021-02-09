@@ -12,7 +12,7 @@ import { chartDateFormat, chartDateTimeFormat } from "../constant/Index";
 
 const AreaChart = ({
   data = [],
-  timeRange = "hour",
+  timeRange = "currMonth",
   className = null,
   id = "area-chart",
   seriesTooltipTitle,
@@ -28,13 +28,14 @@ const AreaChart = ({
   dateAxisMinGridDistance = 60,
   dateAxisStartLocation = 0,
   dateaxisEndLocation = 0,
-  dateAxisStart = 0,
+  dateAxisStart = 0.8,
   dateAxisKeepSelection = false,
   seriesTooltipIsDisabled = false,
   seriesIsStack = true,
   seriesHasBullet = true,
   hasXyCursor = true,
   hasScrollbarX = true,
+  dateFormatterIsUtc = false,
   ...props
 }) => {
   const [defaultTheme, setDefaultTheme] = useState(
@@ -101,8 +102,8 @@ const AreaChart = ({
         case "currDay":
           timeUnit = "minute";
           timeRangeValue = {
-            min: moment().startOf("day").valueOf(),
-            max: moment().endOf("day").valueOf(),
+            min: momentJalali().startOf("day").valueOf(),
+            max: momentJalali().endOf("day").valueOf(),
             format: `HH:mm`,
             jalaliFormat: `HH:mm`,
           };
@@ -145,6 +146,7 @@ const AreaChart = ({
     chart.rtl = persianMode;
     chart.background.opacity = 0.5;
     chart.data = data;
+    chart.preloader.disabled = false;
     chart.colors.list = defaultTheme.colors;
     if (exportable) {
       chart.exporting.menu = new am4core.ExportMenu();
@@ -187,7 +189,7 @@ const AreaChart = ({
       count: count,
     };
     dateAxis.renderer.labels.template.fill = defaultTheme.labelsColor;
-    chart.dateFormatter.utc = true;
+    chart.dateFormatter.utc = dateFormatterIsUtc;
     dateAxis.renderer.labels.template.adapter.add("text", (value, target) => {
       const dateObject = target.dataItem.dates.date;
       let jalaliDate = null;
@@ -270,7 +272,7 @@ const AreaChart = ({
 
   useEffect(() => {
     initalChart();
-  }, [props]);
+  }, []);
 
   return <div id={id} className={className}></div>;
 };
