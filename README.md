@@ -10,8 +10,20 @@
 
 # Props:
 
-| Tables        |      Are      |  Cool |
-| ------------- | :-----------: | ----: |
-| col 3 is      | right-aligned | $1600 |
-| col 2 is      |   centered    |   $12 |
-| zebra stripes |   are neat    |    $1 |
+| Prop Name          |                         default                          |      type | example |
+| ------------------ | :------------------------------------------------------: | --------: | ------- |
+| data               |                            []                            |     array |
+| timeRange          |                        currMonth                         |    string |
+| className          |                          `null`                          |    string |
+| id                 |                       `area-chart`                       |    string |
+| id                 |                       `area-chart`                       |    string |
+| seriesTooltipTitle |                        undefined                         | undefined |
+| persianMode        |                           true                           |   boolean |
+| theme              |                        undefined                         |     array |
+| seriesStrokeWidth  |                            1                             |    number |
+| valueAxisTitle     |                           null                           |    string |
+| seriesTooltipHtml  | `<div style="text-align: center; padding-bottom: 15px;"> |
+
+    <h5>{${persianMode ? `${jalaliDateKeyName}` : `${dateKeyName}`}}</h5>
+    <span>${seriesTooltipTitle}: {${valueKeyName}} </span><br/>
+    </div>`     |    string |
