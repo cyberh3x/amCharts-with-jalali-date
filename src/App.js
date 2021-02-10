@@ -1,16 +1,16 @@
 import "./App.css";
 import AreaChart from "./components/AreaCharts";
 import { useEffect, useState } from "react";
-import { fakeChartData } from "./utils/Data";
+import { fakeChartData } from "./components/utils/Data";
 
 function App() {
   const [data, setData] = useState([]),
     [persianMode, setPersianMode] = useState(true),
     [exportable, setExportable] = useState(true),
-    [timerange, setTimerange] = useState("currMonth"),
-    [color, setColor] = useState("#e22521"),
+    [hasBullet, setHasBullet] = useState(true),
+    [timerange, setTimerange] = useState("currWeek"),
     [key, setKey] = useState(1),
-    properties = "date,value",
+    properties = "normalDate,amount,jDate",
     resetData = async () => {
       const data = await fakeChartData(timerange, properties, persianMode);
       setData(data);
@@ -24,21 +24,28 @@ function App() {
 
   return (
     <div className="app">
-      <div className="container">
+      <div style={{ padding: "25px" }}>
         <input
           type="checkbox"
           value={persianMode}
           onChange={({ target }) => setPersianMode(target.checked)}
           checked={persianMode}
         />
-        Perisan Mode
+        Perisan Mode {" | "}
         <input
           type="checkbox"
           value={exportable}
           onChange={({ target }) => setExportable(target.checked)}
           checked={exportable}
         />
-        Exportable Time Range:
+        Exportable {" | "}
+        <input
+          type="checkbox"
+          value={hasBullet}
+          onChange={({ target }) => setHasBullet(target.checked)}
+          checked={hasBullet}
+        />
+        Has Bullet {" | "} Time Range:
         <select
           value={timerange}
           onChange={({ target }) => setTimerange(target.value)}
@@ -48,21 +55,23 @@ function App() {
           <option value="currMonth">Current Month</option>
           <option value="currYear">Current Year</option>
         </select>
-        {"   "}
+        {" | "}
         <button type="button" onClick={resetData}>
-          Reset Data
+          Reset
         </button>
       </div>
       <AreaChart
         key={key}
         data={data}
         timeRange={timerange}
-        id="persian-chart"
         className={"persian-area-chart"}
         seriesTooltipTitle={"تعداد بازدید"}
         persianMode={persianMode}
         exportable={exportable}
-        seriesHasBullet={false}
+        dateKeyName={"normalDate"}
+        jalaliDateKeyName={"jDate"}
+        valueKeyName={"amount"}
+        seriesHasBullet={hasBullet}
       />
     </div>
   );

@@ -7,8 +7,9 @@ import am4themes_material from "@amcharts/amcharts4/themes/material";
 import momentJalali from "moment-jalaali";
 import fa from "moment/locale/fa";
 import en from "moment/locale/en-au";
-import { chartDateFormat, chartDateTimeFormat } from "../constant/Index";
+import { chartDateTimeFormat, chartDateFormat } from "./constant/Index";
 import "./AreaCharts.css";
+import { getCurrentDate } from "./utils/Data";
 
 const AreaChart = ({
   data = [],
@@ -17,8 +18,6 @@ const AreaChart = ({
   id = "area-chart",
   seriesTooltipTitle,
   persianMode = true,
-  seriesDataFieldsDateX = "date",
-  seriesDataFieldsValueX = "value",
   theme,
   seriesStrokeWidth = 1,
   valueAxisTitle = null,
@@ -36,6 +35,12 @@ const AreaChart = ({
   hasXyCursor = true,
   hasScrollbarX = true,
   dateFormatterIsUtc = false,
+  dateAxisTooltipIsDisabled = true,
+  exportFilePrefix = null,
+  jalaliDateKeyName = "jalaliDate",
+  dateKeyName = "date",
+  valueKeyName = "value",
+  valueAxisMaxPrecision = 0,
 }) => {
   const [defaultTheme, setDefaultTheme] = useState(
       theme
@@ -92,12 +97,8 @@ const AreaChart = ({
         case "currWeek":
           timeUnit = "minute";
           timeRangeValue = {
-            min: momentJalali()
-              .startOf(persianMode ? "jWeek" : "week")
-              .valueOf(),
-            max: momentJalali()
-              .endOf(persianMode ? "jWeek" : "week")
-              .valueOf(),
+            min: momentJalali().startOf("week").valueOf(),
+            max: momentJalali().endOf("week").valueOf(),
             format: `MMM DD`,
             jalaliFormat: `jMMMM jDD`,
           };
@@ -151,13 +152,18 @@ const AreaChart = ({
     chart.data = data;
     chart.preloader.disabled = false;
     chart.colors.list = defaultTheme.colors;
+
+    // export options
     if (exportable) {
       chart.exporting.menu = new am4core.ExportMenu();
+      chart.exporting.filePrefix = exportFilePrefix
+        ? exportFilePrefix
+        : getCurrentDate(persianMode ? "persian" : "gregorian");
       chart.exporting.menu.items = exportMenuItems
         ? exportMenuItems
         : [
             {
-              label: `<p class="p-0 m-4">&#9776;</p>`,
+              label: `<p>&#9776;</p>`,
               menu: [
                 {
                   label: persianMode ? "تصویر" : "Image",
@@ -186,14 +192,27 @@ const AreaChart = ({
     dateAxis.endLocation = dateaxisEndLocation;
     dateAxis.start = dateAxisStart;
     dateAxis.keepSelection = dateAxisKeepSelection;
+    dateAxis.tooltip.disabled = dateAxisTooltipIsDisabled;
     dateAxis.baseInterval = {
       timeUnit: timeUnit,
       count: count,
     };
     dateAxis.renderer.labels.template.fill = defaultTheme.labelsColor;
     chart.dateFormatter.utc = dateFormatterIsUtc;
+    // change date aixis date
     dateAxis.renderer.labels.template.adapter.add("text", (value, target) => {
       const dateObject = target.dataItem.dates.date;
+      let jalaliDate = null;
+      if (dateObject)
+        jalaliDate = momentJalali(dateObject).format(
+          persianMode ? timeRangeValue.jalaliFormat : timeRangeValue.format
+        );
+      return jalaliDate;
+    });
+
+    // change date axis tooltip text
+    dateAxis.adapter.add("getTooltipText", (value, target) => {
+      const dateObject = target.tooltipDate;
       let jalaliDate = null;
       if (dateObject)
         jalaliDate = momentJalali(dateObject).format(
@@ -209,7 +228,7 @@ const AreaChart = ({
       defaultTheme.gridColor
     );
     dateAxis.renderer.grid.template.strokeOpacity = defaultTheme.gridOpacity;
-    //style category axis labels
+    // style category axis labels
     dateAxis.renderer.labels.template.fill = am4core.color(
       defaultTheme.labelsColor
     );
@@ -222,15 +241,15 @@ const AreaChart = ({
     );
     valueAxis.renderer.grid.template.strokeOpacity = defaultTheme.gridOpacity;
     valueAxis.renderer.grid.template.strokeWidth = defaultTheme.gridWidth;
-    valueAxis.maxPrecision = 0;
+    valueAxis.maxPrecision = valueAxisMaxPrecision;
     valueAxis.renderer.grid.template.gridCount = 349742083402;
     valueAxis.renderer.grid.template.location = 0;
     valueAxis.tooltip.disabled = true;
     valueAxis.renderer.labels.template.fill = defaultTheme.labelsColor;
     valueAxis.title.text = valueAxisTitle;
     const series = chart.series.push(new am4charts.LineSeries());
-    series.dataFields.dateX = seriesDataFieldsDateX;
-    series.dataFields.valueY = seriesDataFieldsValueX;
+    series.dataFields.dateX = dateKeyName;
+    series.dataFields.valueY = valueKeyName;
     series.tooltip.background.fill = am4core.color(
       defaultTheme.seriesTooltipBackgroundColor
     );
@@ -246,13 +265,14 @@ const AreaChart = ({
     series.tooltip.getFillFromObject = false;
     series.tooltip.disabled = seriesTooltipIsDisabled;
 
-    const defualtTooltipHtml = `<div class="text-center p-0">
-    <h5>{${persianMode ? `jalaliDate` : `date`}}</h5>
-    <span class="m-2">${seriesTooltipTitle}: {value} </span><br/>
+    const defaultSeriesTooltipHtml = `<div style="text-align: center; padding-bottom: 15px;">
+    <h5>{${persianMode ? `${jalaliDateKeyName}` : `${dateKeyName}`}}</h5>
+    <span>${seriesTooltipTitle}: {${valueKeyName}} </span><br/>
     </div>`;
+
     series.tooltipHTML = seriesTooltipHtml
       ? seriesTooltipHtml
-      : defualtTooltipHtml;
+      : defaultSeriesTooltipHtml;
     series.fillOpacity = defaultTheme.seriesFillOpacity;
 
     let fillModifier = new am4core.LinearGradientModifier();
@@ -285,8 +305,6 @@ AreaChart.propTypes = {
   id: PropTypes.string,
   seriesTooltipTitle: PropTypes.string.isRequired,
   persianMode: PropTypes.bool,
-  seriesDataFieldsDateX: PropTypes.string,
-  seriesDataFieldsValueX: PropTypes.string,
   theme: PropTypes.object,
   seriesStrokeWidth: PropTypes.number,
   valueAxisTitle: PropTypes.string,
@@ -303,6 +321,12 @@ AreaChart.propTypes = {
   seriesHasBullet: PropTypes.bool,
   hasXyCursor: PropTypes.bool,
   hasScrollbarX: PropTypes.bool,
+  dateAxisTooltipIsDisabled: PropTypes.bool,
+  exportFilePrefix: PropTypes.string,
+  jalaliDateKeyName: PropTypes.string,
+  dateKeyName: PropTypes.string,
+  valueKeyName: PropTypes.string,
+  valueAxisMaxPrecision: PropTypes.number,
 };
 
 export default AreaChart;
