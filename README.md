@@ -8,7 +8,7 @@
 
 First copy ./src/components content and paste in your project, then:
 
-`<AreaChart key={key} data={data} timeRange={"currMonth"} seriesTooltipTitle={"تعداد بازدید"} persianMode={true} /> `
+`<AreaChart key={key} data={data} timeRange={timeRange} seriesTooltipTitle={"تعداد بازدید"} persianMode={true} /> `
 
 # Defualt props:
 
@@ -44,6 +44,6 @@ First copy ./src/components content and paste in your project, then:
 | valueKeyName              |                 `value`                 |    string |
 | valueAxisMaxPrecision     |                    0                    |    number |
 
-> For more information visit [amCharts](https://www.amcharts.com/docs/v4/) and this repository example
+> For more information visit [amCharts](https://www.amcharts.com/docs/v4/) documentation and this repository example
 
 ### Developed by [Sajjad Noori](mailto:sajjad.n18@outlook.com)

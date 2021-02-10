@@ -7,9 +7,9 @@ import am4themes_material from "@amcharts/amcharts4/themes/material";
 import momentJalali from "moment-jalaali";
 import fa from "moment/locale/fa";
 import en from "moment/locale/en-au";
+import { getCurrentDate } from "./utils/Data";
 import { chartDateTimeFormat, chartDateFormat } from "./constant/Index";
 import "./AreaCharts.css";
-import { getCurrentDate } from "./utils/Data";
 
 const AreaChart = ({
   data = [],
