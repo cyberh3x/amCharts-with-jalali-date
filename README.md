@@ -16,7 +16,6 @@
 | timeRange                 |               `currMonth`               |    string |
 | className                 |                  null                   |    string |
 | id                        |              `area-chart`               |    string |
-| id                        |              `area-chart`               |    string |
 | seriesTooltipTitle        |                undefined                | undefined |
 | persianMode               |                  true                   |   boolean |
 | theme                     |                undefined                |     array |
