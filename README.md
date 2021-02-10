@@ -1,17 +1,18 @@
 # amCharts with persian date
 
-![Package Demo][logo]
+![amCharts with persian date(Jalali Date)][logo]
 
-[logo]: https://s17.picofile.com/file/8424546150/ezgif_com_gif_maker.gif "Demo"
+[logo]: https://s17.picofile.com/file/8424546150/ezgif_com_gif_maker.gif "amCharts with persian date(Jalali Date)"
 
 # Usage:
 
+First copy ./src/components content and paste in your project, then:
 `<AreaChart key={key} data={data} timeRange={"currMonth"} seriesTooltipTitle={"تعداد بازدید"} persianMode={true} /> `
 
-# Props:
+# Defualt props:
 
-| Prop Name                 |                 default                 |      type | example |
-| ------------------------- | :-------------------------------------: | --------: | ------- |
+| Prop Name                 |                 default                 |      type |
+| ------------------------- | :-------------------------------------: | --------: |
 | data                      |                   []                    |     array |
 | timeRange                 |               `currMonth`               |    string |
 | className                 |                  null                   |    string |
@@ -41,5 +42,7 @@
 | dateKeyName               |                 `date`                  |    string |
 | valueKeyName              |                 `value`                 |    string |
 | valueAxisMaxPrecision     |                    0                    |    number |
+
+> For more information visit [amCharts](https://www.amcharts.com/docs/v4/) and this repository example
 
 ### Developed by [Sajjad Noori](mailto:sajjad.n18@outlook.com)
