@@ -8,7 +8,7 @@ function App() {
     [persianMode, setPersianMode] = useState(true),
     [exportable, setExportable] = useState(true),
     [hasBullet, setHasBullet] = useState(true),
-    [timerange, setTimerange] = useState("currWeek"),
+    [timerange, setTimerange] = useState("currMonth"),
     [key, setKey] = useState(1),
     properties = "normalDate,amount,jDate",
     resetData = async () => {
