@@ -24,33 +24,35 @@ function App() {
 
   return (
     <div className="app">
-      <input
-        type="checkbox"
-        value={persianMode}
-        onChange={({ target }) => setPersianMode(target.checked)}
-        checked={persianMode}
-      />
-      Perisan Mode
-      <input
-        type="checkbox"
-        value={exportable}
-        onChange={({ target }) => setExportable(target.checked)}
-        checked={exportable}
-      />
-      Exportable Time Range:
-      <select
-        value={timerange}
-        onChange={({ target }) => setTimerange(target.value)}
-      >
-        <option value="currDay">Current Day</option>
-        <option value="currWeek">Current Week</option>
-        <option value="currMonth">Current Month</option>
-        <option value="currYear">Current Year</option>
-      </select>
-      {"   "}
-      <button type="button" onClick={resetData}>
-        Reset Data
-      </button>
+      <div className="container">
+        <input
+          type="checkbox"
+          value={persianMode}
+          onChange={({ target }) => setPersianMode(target.checked)}
+          checked={persianMode}
+        />
+        Perisan Mode
+        <input
+          type="checkbox"
+          value={exportable}
+          onChange={({ target }) => setExportable(target.checked)}
+          checked={exportable}
+        />
+        Exportable Time Range:
+        <select
+          value={timerange}
+          onChange={({ target }) => setTimerange(target.value)}
+        >
+          <option value="currDay">Current Day</option>
+          <option value="currWeek">Current Week</option>
+          <option value="currMonth">Current Month</option>
+          <option value="currYear">Current Year</option>
+        </select>
+        {"   "}
+        <button type="button" onClick={resetData}>
+          Reset Data
+        </button>
+      </div>
       <AreaChart
         key={key}
         data={data}
@@ -60,6 +62,7 @@ function App() {
         seriesTooltipTitle={"تعداد بازدید"}
         persianMode={persianMode}
         exportable={exportable}
+        seriesHasBullet={false}
       />
     </div>
   );
