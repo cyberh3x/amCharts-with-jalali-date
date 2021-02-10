@@ -5,10 +5,10 @@ import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 import am4themes_material from "@amcharts/amcharts4/themes/material";
 import momentJalali from "moment-jalaali";
-import moment from "moment";
 import fa from "moment/locale/fa";
 import en from "moment/locale/en-au";
 import { chartDateFormat, chartDateTimeFormat } from "../constant/Index";
+import "./AreaCharts.css";
 
 const AreaChart = ({
   data = [],
@@ -36,7 +36,6 @@ const AreaChart = ({
   hasXyCursor = true,
   hasScrollbarX = true,
   dateFormatterIsUtc = false,
-  ...props
 }) => {
   const [defaultTheme, setDefaultTheme] = useState(
       theme
@@ -93,8 +92,12 @@ const AreaChart = ({
         case "currWeek":
           timeUnit = "minute";
           timeRangeValue = {
-            min: momentJalali().startOf("week").valueOf(),
-            max: momentJalali().endOf("week").valueOf(),
+            min: momentJalali()
+              .startOf(persianMode ? "jWeek" : "week")
+              .valueOf(),
+            max: momentJalali()
+              .endOf(persianMode ? "jWeek" : "week")
+              .valueOf(),
             format: `MMM DD`,
             jalaliFormat: `jMMMM jDD`,
           };
@@ -178,7 +181,6 @@ const AreaChart = ({
           ];
     }
     const dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-    dateAxis.tooltip.disabled = true;
     dateAxis.renderer.minGridDistance = dateAxisMinGridDistance;
     dateAxis.startLocation = dateAxisStartLocation;
     dateAxis.endLocation = dateaxisEndLocation;
@@ -193,11 +195,10 @@ const AreaChart = ({
     dateAxis.renderer.labels.template.adapter.add("text", (value, target) => {
       const dateObject = target.dataItem.dates.date;
       let jalaliDate = null;
-      if (dateObject !== undefined) {
+      if (dateObject)
         jalaliDate = momentJalali(dateObject).format(
           persianMode ? timeRangeValue.jalaliFormat : timeRangeValue.format
         );
-      }
       return jalaliDate;
     });
     if (timeRangeValue.format.length)
@@ -239,7 +240,7 @@ const AreaChart = ({
     series.strokeWidth = seriesStrokeWidth;
     series.tensionX = 1;
     series.stacked = seriesIsStack;
-    if (seriesHasBullet) series.bullets.push(new am4charts.CircleBullet());
+    seriesHasBullet && series.bullets.push(new am4charts.CircleBullet());
     series.background.fill.fill = defaultTheme.colors[0];
     series.fillOpacity = defaultTheme.seriesOpacity;
     series.tooltip.getFillFromObject = false;
@@ -274,7 +275,7 @@ const AreaChart = ({
     initalChart();
   }, []);
 
-  return <div id={id} className={className}></div>;
+  return <div id={id} className={`chart-root ${className}`}></div>;
 };
 
 AreaChart.propTypes = {
