@@ -6,4 +6,10 @@
 
 # Usage:
 
-`<AreaChart key={key} data={data} timeRange={"currMonth"} seriesTooltipTitle={"تعداد بازدید"} persianMode={true} /> `
+`<AreaChart`
+`key={key}`
+`data={data}`
+`timeRange={"currMonth"}`
+`seriesTooltipTitle={"تعداد بازدید"}`
+`persianMode={true}`
+`/>`
