@@ -7,6 +7,7 @@
 # Usage:
 
 First copy ./src/components content and paste in your project, then:
+
 `<AreaChart key={key} data={data} timeRange={"currMonth"} seriesTooltipTitle={"تعداد بازدید"} persianMode={true} /> `
 
 # Defualt props:

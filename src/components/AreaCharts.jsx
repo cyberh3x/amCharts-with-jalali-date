@@ -71,10 +71,10 @@ const AreaChart = ({
           }
     ),
     getTimeSettings = () => {
-      let timeUnit = timeRange;
-      let count = 1;
-      let inputDateFormat = chartDateFormat;
-      let timeRangeValue = {};
+      let timeUnit = timeRange,
+        count = 1,
+        inputDateFormat = chartDateFormat,
+        timeRangeValue = {};
       momentJalali.locale("en", en);
       if (persianMode) {
         momentJalali.locale("fa", fa);
@@ -144,7 +144,7 @@ const AreaChart = ({
     } = getTimeSettings();
     am4core.useTheme(am4themes_animated);
     am4core.useTheme(am4themes_material);
-    let chart = am4core.create(id, am4charts.XYChart);
+    const chart = am4core.create(id, am4charts.XYChart);
     chart.paddingRight = 20;
     chart.dateFormatter.inputDateFormat = inputDateFormat;
     chart.rtl = persianMode;
@@ -209,7 +209,6 @@ const AreaChart = ({
         );
       return jalaliDate;
     });
-
     // change date axis tooltip text
     dateAxis.adapter.add("getTooltipText", (value, target) => {
       const dateObject = target.tooltipDate;
