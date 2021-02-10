@@ -23,7 +23,7 @@ function App() {
   }, []);
 
   return (
-    <div className="app">
+    <>
       <div style={{ padding: "25px" }}>
         <input
           type="checkbox"
@@ -73,7 +73,7 @@ function App() {
         valueKeyName={"amount"}
         seriesHasBullet={hasBullet}
       />
-    </div>
+    </>
   );
 }
 
