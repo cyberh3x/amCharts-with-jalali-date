@@ -2,7 +2,7 @@
 
 ![Package Demo][logo]
 
-[logo]: https://s17.picofile.com/file/8424546150/ezgif_com_gif_maker.gif "Logo Title Text 2"
+[logo]: https://s17.picofile.com/file/8424546150/ezgif_com_gif_maker.gif "Demo"
 
 # Usage:
 
@@ -15,7 +15,6 @@
 | data                      |                   []                    |     array |
 | timeRange                 |               `currMonth`               |    string |
 | className                 |                  null                   |    string |
-| id                        |              `area-chart`               |    string |
 | id                        |              `area-chart`               |    string |
 | seriesTooltipTitle        |                undefined                | undefined |
 | persianMode               |                  true                   |   boolean |
@@ -42,3 +41,5 @@
 | dateKeyName               |                 `date`                  |    string |
 | valueKeyName              |                 `value`                 |    string |
 | valueAxisMaxPrecision     |                    0                    |    number |
+
+### Developed by [Sajjad Noori](mailto:sajjad.n18@outlook.com)
