@@ -1,6 +1,6 @@
 {
   "name": "am-charts-with-persian-date",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "private": false,
   "babel": {
     "presets": [

@@ -42,3 +42,5 @@
 | dateKeyName               |                 `date`                  |    string |
 | valueKeyName              |                 `value`                 |    string |
 | valueAxisMaxPrecision     |                    0                    |    number |
+
+### Developed by [Sajjad Noori](mailto:sajjad.n18@outlook.com)
