@@ -8,7 +8,7 @@
 
 First copy ./src/components content and paste in your project, then:
 
-`import AreaChart from 'import AreaChart from "components/AreaCharts"';`
+`import AreaChart from "components/AreaCharts";`
 
 `<AreaChart key={key} data={data} timeRange={timeRange} seriesTooltipTitle={"تعداد بازدید"} persianMode={true} /> `
 
