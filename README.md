@@ -4,6 +4,8 @@
 
 [logo]: https://s17.picofile.com/file/8424546150/ezgif_com_gif_maker.gif "amCharts with persian date(Jalali Date)"
 
+test
+
 # Usage:
 
 First copy ./src/components content and paste in your project, then:
