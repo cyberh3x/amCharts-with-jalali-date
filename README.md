@@ -47,5 +47,3 @@ First copy ./src/components content and paste in your project, then:
 | valueAxisMaxPrecision     |                    0                    |    number |
 
 > For more information visit [amCharts](https://www.amcharts.com/docs/v4/) documentation and this repository example
-
-### Developed by [Sajjad Noori](mailto:sajjad.n18@outlook.com)
